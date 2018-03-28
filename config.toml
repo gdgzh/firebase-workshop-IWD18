@@ -1,4 +1,4 @@
-baseURL = "http://example.org/"
+baseURL = "https://firetalk-7b1ad.firebaseapp.com"
 languageCode = "en-us"
 title = "Firebase workshop IWD18"
 theme = "hugo-material-docs"
@@ -18,7 +18,7 @@ googleAnalytics = ""
 	repo_url = "https://github.com/gdgzh/firebase-workshop-IWD18"
 
 	version = "1.0.0"
-	logo = "img/wtm-logo.png"
+	logo = "/img/wtm-logo.png"
 	favicon = ""
 
 	permalink = "#"

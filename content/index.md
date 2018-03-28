@@ -14,6 +14,9 @@ Preconditions
 
 Get working base
 * clone git repo
+* initialize submodule
+git submodule init
+git submodule update
 * start hugo server
 * See it in action
 
@@ -22,6 +25,8 @@ Getting started with Firebase
 * Create your first Firebase project
 * Enable authentication options
 * Login to cli
+firebase init
+
 * deploy site to firebase hosting 
 
 Enhance site with commenting
