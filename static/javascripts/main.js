@@ -54,7 +54,35 @@ FireTalk.prototype.signOut = function() {
 
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
 FireTalk.prototype.onAuthStateChanged = function(user) {
-    // TODO: Listen to auth state changes 
+    // TODO: Listen to auth state changes
+    if (user) { // User is signed in!
+        // Get profile pic and user's name from the Firebase user object.
+        var profilePicUrl = user.photoURL;
+        var userName = user.displayName;
+    
+        // Set the user's profile pic and name.
+        this.userPic.style.backgroundImage = 'url(' + (profilePicUrl || '/images/profile_placeholder.png') + ')';
+        this.userName.textContent = userName;
+    
+        // Show user's profile and sign-out button.
+        this.userName.removeAttribute('hidden');
+        this.userPic.removeAttribute('hidden');
+        this.signOutButton.removeAttribute('hidden');
+    
+        // Hide sign-in button.
+        this.signInButton.setAttribute('hidden', 'true');
+    
+        // TODO: Load comments here
+    
+      } else { // User is signed out!
+        // Hide user's profile and sign-out button.
+        this.userName.setAttribute('hidden', 'true');
+        this.userPic.setAttribute('hidden', 'true');
+        this.signOutButton.setAttribute('hidden', 'true');
+    
+        // Show sign-in button.
+        this.signInButton.removeAttribute('hidden');
+      }
 };
 
 FireTalk.prototype.checkSetup = function() {
