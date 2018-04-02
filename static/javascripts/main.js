@@ -41,12 +41,15 @@ FireTalk.prototype.initFirebase = function() {
 FireTalk.prototype.signIn = function() {
     // TODO: Implement signin method
     // Sign in Firebase using popup auth and Google as the identity provider.
+    var provider = new firebase.auth.GoogleAuthProvider();
+    this.auth.signInWithPopup(provider);
 };
 
 // Signs-out of Friendly Chat.
 FireTalk.prototype.signOut = function() {
     // TODO: Implement signout method
     // Sign out of Firebase.
+    this.auth.signOut();
 };
 
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
