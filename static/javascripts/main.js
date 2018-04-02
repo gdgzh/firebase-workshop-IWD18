@@ -30,6 +30,12 @@ function FireTalk() {
 
 FireTalk.prototype.initFirebase = function() {
     // TODO: Init firebase
+        // Shortcuts
+        this.auth = firebase.auth();
+        this.database = firebase.database();
+        
+        // Initiates Firebase auth and listen to auth state changes.
+        this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
 };
 
 FireTalk.prototype.signIn = function() {
