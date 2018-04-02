@@ -3,6 +3,12 @@
   // Initialize Firebase
   // TODO: Add configuration for firebase here
   var config = {
+    apiKey: "AIzaSyBREeQlrGADDe0XoNnJLgmHNdi4cE8mN0c",
+    authDomain: "firetalk-7b1ad.firebaseapp.com",
+    databaseURL: "https://firetalk-7b1ad.firebaseio.com",
+    projectId: "firetalk-7b1ad",
+    storageBucket: "firetalk-7b1ad.appspot.com",
+    messagingSenderId: "777143835998"
   };
   firebase.initializeApp(config);
 
