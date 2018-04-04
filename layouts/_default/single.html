@@ -27,7 +27,7 @@
 
 			{{ .Content }}
 			<p>comments</p>
-
+			{{ partial "comments" . }}
 			<aside class="copyright" role="note">
 				{{ with .Site.Params.copyright }}
 				&copy; {{ now.Format "2006" }} {{ . }} &ndash;
