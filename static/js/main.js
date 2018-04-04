@@ -21,7 +21,10 @@ function FireTalk() {
   this.signInButton = document.getElementById('sign-in');
   this.signOutButton = document.getElementById('sign-out');
 
-  // Saves message on form submit.
+  // Comments
+  this.commentList = document.getElementById('comments');
+
+  // Saves comment on form submit.
   this.signOutButton.addEventListener('click', this.signOut.bind(this));
   this.signInButton.addEventListener('click', this.signIn.bind(this));
 
@@ -45,7 +48,7 @@ FireTalk.prototype.signIn = function() {
     this.auth.signInWithPopup(provider);
 };
 
-// Signs-out of Friendly Chat.
+// Signs-out
 FireTalk.prototype.signOut = function() {
     // TODO: Implement signout method
     // Sign out of Firebase.
@@ -73,6 +76,7 @@ FireTalk.prototype.onAuthStateChanged = function(user) {
         this.signInButton.setAttribute('hidden', 'true');
     
         // TODO: Load comments here
+        this.loadComments();
     
       } else { // User is signed out!
         // Hide user's profile and sign-out button.
@@ -90,6 +94,53 @@ FireTalk.prototype.checkSetup = function() {
     window.alert('You have not configured and imported the Firebase SDK.');
   }
 };
+
+// Template for comments.
+var COMMENT_TEMPLATE = '<div class="message-container">' +
+'<div class="spacing"><div class="pic"></div></div>' +
+'<div class="title"></div>' +
+'<div class="text"></div>' +
+'</div>';
+
+// Loads comments and listen to upcoming ones.
+FireTalk.prototype.loadComments = function() {
+    // Reference to the /comments/ database path.
+    this.commentsRef = this.database.ref('comments');
+    // Make sure we remove all previous listeners.
+    this.commentsRef.off();
+  
+    // Loads the last 12 comments and listen for new ones.
+    var setComment = function(data) {
+      var val = data.val();
+      this.displayComments(data.key, val.title, val.text);
+    }.bind(this);
+    this.commentsRef.limitToLast(12).on('child_added', setComment);
+    this.commentsRef.limitToLast(12).on('child_changed', setComment);
+  };
+
+// Displays a comment in the UI.
+FireTalk.prototype.displayComments = function(key, title, text) {
+    var div = document.getElementById(key);
+    // If an element for that comment does not exists yet we create it.
+    if (!div) {
+      var container = document.createElement('div');
+      container.innerHTML = COMMENT_TEMPLATE;
+      div = container.firstChild;
+      div.setAttribute('id', key);
+      this.commentList.appendChild(div);
+    }
+    div.querySelector('.title').textContent = title;
+    var commentElement = div.querySelector('.text');
+    if (text) {
+        commentElement.textContent = text;
+      // Replace all line breaks by <br>.
+      commentElement.innerHTML = commentElement.innerHTML.replace(/\n/g, '<br>');
+    }
+    // Show the card fading-in and scroll to view the new comment.
+    // setTimeout(function() {div.classList.add('visible')}, 1);
+    // this.commentList.scrollTop = this.commentList.scrollHeight;
+    // this.messageInput.focus();
+  };
 
 window.onload = function() {
   window.FireTalk = new FireTalk();
