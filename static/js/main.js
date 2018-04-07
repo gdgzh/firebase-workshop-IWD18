@@ -20,6 +20,17 @@ function FireTalk() {
   this.userName = document.getElementById('user-name');
   this.signInButton = document.getElementById('sign-in');
   this.signOutButton = document.getElementById('sign-out');
+  this.newCommentsTextField = document.getElementById('new-comments');
+  this.commentsForm = document.getElementById('comments-form');
+  this.commentInput = document.getElementById('new-comment');
+  this.submitButton = document.getElementById('submit');
+  this.commentsForm.addEventListener('submit', this.saveComment.bind(this));
+
+    // Toggle for the button.
+    var buttonTogglingHandler = this.toggleButton.bind(this);
+    this.commentInput.addEventListener('keyup', buttonTogglingHandler);
+    this.commentInput.addEventListener('change', buttonTogglingHandler);
+
 
   // Comments
   this.commentList = document.getElementById('comments');
@@ -27,6 +38,7 @@ function FireTalk() {
   // Saves comment on form submit.
   this.signOutButton.addEventListener('click', this.signOut.bind(this));
   this.signInButton.addEventListener('click', this.signIn.bind(this));
+  
 
   this.initFirebase();
 }
@@ -74,6 +86,9 @@ FireTalk.prototype.onAuthStateChanged = function(user) {
     
         // Hide sign-in button.
         this.signInButton.setAttribute('hidden', 'true');
+
+        // Show the textfield when user is logged in
+        this.newCommentsTextField.removeAttribute('hidden');
     
         // TODO: Load comments here
         this.loadComments();
@@ -98,7 +113,7 @@ FireTalk.prototype.checkSetup = function() {
 // Template for comments.
 var COMMENT_TEMPLATE = '<div class="message-container">' +
 '<div class="spacing"><div class="pic"></div></div>' +
-'<div class="title"></div>' +
+'<div class="name"></div>' +
 '<div class="text"></div>' +
 '</div>';
 
@@ -112,14 +127,69 @@ FireTalk.prototype.loadComments = function() {
     // Loads the last 12 comments and listen for new ones.
     var setComment = function(data) {
       var val = data.val();
-      this.displayComments(data.key, val.title, val.text);
+      this.displayComments(data.key, val.name, val.text);
     }.bind(this);
     this.commentsRef.limitToLast(12).on('child_added', setComment);
     this.commentsRef.limitToLast(12).on('child_changed', setComment);
+    // We are finished loading the comments. Disable loading text
+    document.getElementById('loading').setAttribute('hidden', 'true');
   };
 
+  // Saves a new comment on the Firebase DB.
+  FireTalk.prototype.saveComment = function(e) {
+  e.preventDefault();
+  // Check that the user entered a comment and is signed in.
+  if (this.commentInput.value && this.checkSignedInWithMessage()) {
+    var currentUser = this.auth.currentUser;
+    // Add a new comment entry to the Firebase Database.
+    this.commentsRef.push({
+      name: currentUser.displayName,
+      text: this.commentInput.value,
+      photoUrl: currentUser.photoURL || '/images/profile_placeholder.png'
+    }).then(function() {
+      // Clear comments text field and SEND button state.
+      FireTalk.resetMaterialTextfield(this.commentInput);
+      this.toggleButton();
+    }.bind(this)).catch(function(error) {
+      console.error('Error writing new comment to Firebase Database', error);
+    });
+  }
+};
+
+// Resets the given MaterialTextField.
+FireTalk.prototype.resetMaterialTextfield = function(element) {
+  element.value = '';
+  element.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+};
+
+// Returns true if user is signed-in. Otherwise false and displays a message.
+FireTalk.prototype.checkSignedInWithMessage = function() {
+  // Return true if the user is signed in Firebase
+  if (this.auth.currentUser) {
+    return true;
+  }
+
+  // Display a message to the user using a Toast.
+  var data = {
+    message: 'You must sign-in first',
+    timeout: 2000
+  };
+  this.signInSnackbar.MaterialSnackbar.showSnackbar(data);
+  return false;
+};
+
+// Enables or disables the submit button depending on the values of the input
+// fields.
+FireTalk.prototype.toggleButton = function() {
+  if (this.commentInput.value) {
+    this.submitButton.removeAttribute('disabled');
+  } else {
+    this.submitButton.setAttribute('disabled', 'true');
+  }
+};
+
 // Displays a comment in the UI.
-FireTalk.prototype.displayComments = function(key, title, text) {
+FireTalk.prototype.displayComments = function(key, name, text) {
     var div = document.getElementById(key);
     // If an element for that comment does not exists yet we create it.
     if (!div) {
@@ -129,7 +199,7 @@ FireTalk.prototype.displayComments = function(key, title, text) {
       div.setAttribute('id', key);
       this.commentList.appendChild(div);
     }
-    div.querySelector('.title').textContent = title;
+    div.querySelector('.name').textContent = name;
     var commentElement = div.querySelector('.text');
     if (text) {
         commentElement.textContent = text;
