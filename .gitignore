@@ -1,0 +1,6 @@
+/public
+.DS_Store
+.firebaserc
+/node_modules
+/functions/
+/functions/node_modules

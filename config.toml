@@ -1,4 +1,4 @@
-baseURL = "http://example.org/"
+baseURL = "https://firetalk.rac.su"
 languageCode = "en-us"
 title = "Firebase workshop IWD18"
 theme = "hugo-material-docs"
@@ -18,7 +18,7 @@ googleAnalytics = ""
 	repo_url = "https://github.com/gdgzh/firebase-workshop-IWD18"
 
 	version = "1.0.0"
-	logo = "img/wtm-logo.png"
+	logo = "/img/wtm-logo.png"
 	favicon = ""
 
 	permalink = "#"
@@ -46,29 +46,9 @@ googleAnalytics = ""
 
 
 [[menu.main]]
-	name   = "Material"
+	name   = "Workshop"
 	url    = "/"
 	weight = 0
-
-[[menu.main]]
-	name   = "Getting started"
-	url    = "getting-started/"
-	weight = 10
-
-[[menu.main]]
-	name   = "Adding content"
-	url    = "adding-content/"
-	weight = 20
-
-[[menu.main]]
-	name   = "Roadmap"
-	url    = "roadmap/"
-	weight = 30
-
-[[menu.main]]
-	name   = "License"
-	url    = "license/"
-	weight = 40
 
 
 [blackfriday]
