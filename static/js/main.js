@@ -89,7 +89,9 @@ FireTalk.prototype.onAuthStateChanged = function(user) {
 
         // Show the textfield when user is logged in
         this.newCommentsTextField.removeAttribute('hidden');
-    
+
+        this.commentList.removeAttribute('hidden');
+
         // TODO: Load comments here
         this.loadComments();
     
@@ -98,9 +100,11 @@ FireTalk.prototype.onAuthStateChanged = function(user) {
         this.userName.setAttribute('hidden', 'true');
         this.userPic.setAttribute('hidden', 'true');
         this.signOutButton.setAttribute('hidden', 'true');
-    
+        this.newCommentsTextField.setAttribute('hidden', 'true');
+        this.commentList.setAttribute('hidden', 'true');
         // Show sign-in button.
         this.signInButton.removeAttribute('hidden');
+
       }
 };
 
