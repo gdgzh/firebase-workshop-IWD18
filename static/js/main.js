@@ -1,16 +1,7 @@
 'use strict';
 
   // Initialize Firebase
-  // TODO: Add configuration for firebase here
-  var config = {
-    apiKey: "AIzaSyBREeQlrGADDe0XoNnJLgmHNdi4cE8mN0c",
-    authDomain: "firetalk-7b1ad.firebaseapp.com",
-    databaseURL: "https://firetalk-7b1ad.firebaseio.com",
-    projectId: "firetalk-7b1ad",
-    storageBucket: "firetalk-7b1ad.appspot.com",
-    messagingSenderId: "777143835998"
-  };
-  firebase.initializeApp(config);
+  // TODO: Add configuration for firebase here and init
 
 function FireTalk() {
   this.checkSetup();
@@ -27,10 +18,9 @@ function FireTalk() {
   this.commentsForm.addEventListener('submit', this.saveComment.bind(this));
 
     // Toggle for the button.
-    var buttonTogglingHandler = this.toggleButton.bind(this);
-    this.commentInput.addEventListener('keyup', buttonTogglingHandler);
-    this.commentInput.addEventListener('change', buttonTogglingHandler);
-
+  var buttonTogglingHandler = this.toggleButton.bind(this);
+  this.commentInput.addEventListener('keyup', buttonTogglingHandler);
+  this.commentInput.addEventListener('change', buttonTogglingHandler);
 
   // Comments
   this.commentList = document.getElementById('comments');
@@ -39,32 +29,22 @@ function FireTalk() {
   this.signOutButton.addEventListener('click', this.signOut.bind(this));
   this.signInButton.addEventListener('click', this.signIn.bind(this));
   
-
   this.initFirebase();
 }
 
 FireTalk.prototype.initFirebase = function() {
     // TODO: Init firebase
-        // Shortcuts
-        this.auth = firebase.auth();
-        this.database = firebase.database();
-        
-        // Initiates Firebase auth and listen to auth state changes.
-        this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
 };
 
 FireTalk.prototype.signIn = function() {
     // TODO: Implement signin method
     // Sign in Firebase using popup auth and Google as the identity provider.
-    var provider = new firebase.auth.GoogleAuthProvider();
-    this.auth.signInWithPopup(provider);
 };
 
 // Signs-out
 FireTalk.prototype.signOut = function() {
     // TODO: Implement signout method
     // Sign out of Firebase.
-    this.auth.signOut();
 };
 
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
@@ -93,7 +73,6 @@ FireTalk.prototype.onAuthStateChanged = function(user) {
         this.commentList.removeAttribute('hidden');
 
         // TODO: Load comments here
-        this.loadComments();
     
       } else { // User is signed out!
         // Hide user's profile and sign-out button.
@@ -123,40 +102,29 @@ var COMMENT_TEMPLATE = '<div class="message-container">' +
 
 // Loads comments and listen to upcoming ones.
 FireTalk.prototype.loadComments = function() {
+    // TODO:
     // Reference to the /comments/ database path.
     this.commentsRef = this.database.ref('comments');
+
     // Make sure we remove all previous listeners.
     this.commentsRef.off();
   
+    // TOOD:
     // Loads the last 12 comments and listen for new ones.
-    var setComment = function(data) {
-      var val = data.val();
-      this.displayComments(data.key, val.name, val.text);
-    }.bind(this);
-    this.commentsRef.limitToLast(12).on('child_added', setComment);
-    this.commentsRef.limitToLast(12).on('child_changed', setComment);
+
     // We are finished loading the comments. Disable loading text
     document.getElementById('loading').setAttribute('hidden', 'true');
   };
 
   // Saves a new comment on the Firebase DB.
   FireTalk.prototype.saveComment = function(e) {
-  e.preventDefault();
-  // Check that the user entered a comment and is signed in.
-  if (this.commentInput.value && this.checkSignedInWithMessage()) {
+    e.preventDefault();
+    // Check that the user entered a comment and is signed in.
+  
+    if (this.commentInput.value && this.checkSignedInWithMessage()) {
     var currentUser = this.auth.currentUser;
+    //TODO: Push comment to server
     // Add a new comment entry to the Firebase Database.
-    this.commentsRef.push({
-      name: currentUser.displayName,
-      text: this.commentInput.value,
-      photoUrl: currentUser.photoURL || '/images/profile_placeholder.png'
-    }).then(function() {
-      // Clear comments text field and SEND button state.
-      FireTalk.resetMaterialTextfield(this.commentInput);
-      this.toggleButton();
-    }.bind(this)).catch(function(error) {
-      console.error('Error writing new comment to Firebase Database', error);
-    });
   }
 };
 
@@ -210,10 +178,6 @@ FireTalk.prototype.displayComments = function(key, name, text) {
       // Replace all line breaks by <br>.
       commentElement.innerHTML = commentElement.innerHTML.replace(/\n/g, '<br>');
     }
-    // Show the card fading-in and scroll to view the new comment.
-    // setTimeout(function() {div.classList.add('visible')}, 1);
-    // this.commentList.scrollTop = this.commentList.scrollHeight;
-    // this.messageInput.focus();
   };
 
 window.onload = function() {
